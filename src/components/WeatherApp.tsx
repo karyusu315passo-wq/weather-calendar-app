@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import AdviceCards from "@/components/AdviceCards";
 import Calendar from "@/components/Calendar";
 import { weatherEmoji, type WeatherResponse } from "@/lib/weather";
 
@@ -176,6 +177,8 @@ export default function WeatherApp() {
               <Stat label="降水確率" value={`${day.pop}%`} />
               <Stat label={isToday ? "風速" : "天気"} value={isToday ? `${data.current.windSpeed} m/s` : day.description} />
             </dl>
+
+            <AdviceCards day={day} />
 
             <h3 className="mt-6 mb-2 text-sm font-semibold opacity-90">3時間ごとの予報</h3>
             <ul className="flex gap-2 overflow-x-auto pb-2">

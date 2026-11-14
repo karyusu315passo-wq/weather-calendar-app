@@ -5,6 +5,7 @@ export type HourlyForecast = {
   temp: number;
   humidity: number;
   pop: number; // 降水確率 0〜100 (%)
+  windSpeed: number; // m/s
   description: string;
   weatherId: number;
   icon: string;
@@ -16,6 +17,7 @@ export type DailyForecast = {
   tempMax: number;
   humidity: number; // 平均湿度
   pop: number; // その日の最大降水確率
+  windSpeed: number; // 平均風速 m/s
   description: string;
   weatherId: number;
   icon: string;
@@ -56,6 +58,7 @@ export type OwmForecast = {
     dt: number;
     main: { temp: number; temp_min: number; temp_max: number; humidity: number };
     weather: OwmWeather[];
+    wind?: { speed: number };
     pop: number;
   }[];
 };
@@ -92,6 +95,7 @@ export function buildWeatherResponse(current: OwmCurrent, forecast: OwmForecast)
       tempMax: Math.max(...entries.map((e) => e.item.main.temp_max), ...temps),
       humidity: Math.round(entries.reduce((s, e) => s + e.item.main.humidity, 0) / entries.length),
       pop: Math.round(Math.max(...entries.map((e) => e.item.pop)) * 100),
+      windSpeed: Math.round((entries.reduce((s, e) => s + (e.item.wind?.speed ?? 0), 0) / entries.length) * 10) / 10,
       description: rep.item.weather[0]?.description ?? "",
       weatherId: rep.item.weather[0]?.id ?? 800,
       icon: rep.item.weather[0]?.icon ?? "01d",
@@ -100,6 +104,7 @@ export function buildWeatherResponse(current: OwmCurrent, forecast: OwmForecast)
         temp: item.main.temp,
         humidity: item.main.humidity,
         pop: Math.round(item.pop * 100),
+        windSpeed: item.wind?.speed ?? 0,
         description: item.weather[0]?.description ?? "",
         weatherId: item.weather[0]?.id ?? 800,
         icon: item.weather[0]?.icon ?? "01d",
